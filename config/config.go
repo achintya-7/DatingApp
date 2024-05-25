@@ -1,8 +1,7 @@
 package config
 
 import (
-	"log"
-
+	"github.com/achintya-7/dating-app/logger"
 	"github.com/spf13/viper"
 )
 
@@ -22,13 +21,15 @@ func LoadConfig() (config *Config) {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		log.Fatalln("Error reading config file or maybe it was not present: ", err.Error())
+		logger.Fatal(nil, "Error reading config file or maybe it was not present: ", err.Error())
 	}
 
 	err = viper.Unmarshal(&config)
 	if err != nil {
-		log.Fatalln("Unable to decode into struct, ", err.Error())
+		logger.Fatal(nil, "Unable to decode into struct, ", err.Error())
 	}
+
+	logger.Info(nil, "Config loaded successfully")
 
 	Values = config
 	return config
