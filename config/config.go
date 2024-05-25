@@ -10,6 +10,7 @@ var Values *Config
 
 type Config struct {
 	MySqlUrl string `mapstructure:"MYSQL_URL"`
+	RedisUrl string `mapstructure:"REDIS_URL"`
 	HttpPort string `mapstructure:"HTTP_PORT"`
 }
 
