@@ -3,3 +3,4 @@ new-migration:
 
 mysql-docker:
 	docker run --name mysql-container -p 3306:3306 -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_USER=admin -e MYSQL_PASSWORD=secret -e MYSQL_DATABASE=dating_app -d mysql:latest
+

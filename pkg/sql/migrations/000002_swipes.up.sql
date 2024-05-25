@@ -1,7 +1,7 @@
 CREATE TABLE Swipes (
-    swipe_id INT AUTO_INCREMENT PRIMARY KEY,
-    swiper_id INT,
-    swipee_id INT,
+    swipe_id VARCHAR(255) PRIMARY KEY,
+    swiper_id VARCHAR(255) NOT NULL,
+    swipee_id VARCHAR(255) NOT NULL,
     swipe_type ENUM('YES', 'NO'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (swiper_id) REFERENCES Users(user_id),

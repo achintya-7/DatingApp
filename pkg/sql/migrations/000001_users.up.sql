@@ -1,12 +1,12 @@
 CREATE TABLE Users (
-    user_id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) UNIQUE,
-    password VARCHAR(255),
-    name VARCHAR(255),
-    gender ENUM('Male', 'Female'),
-    date_of_birth DATE,
-    latitude DECIMAL(9,6),
-    longitude DECIMAL(9,6),
+    user_id VARCHAR(255) PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    gender VARCHAR(255) NOT NULL,
+    age INT NOT NULL,
+    latitude FLOAT NOT NULL,
+    longitude FLOAT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

@@ -9,9 +9,10 @@ import (
 var Values *Config
 
 type Config struct {
-	MySqlUrl string `mapstructure:"MYSQL_URL"`
-	RedisUrl string `mapstructure:"REDIS_URL"`
-	HttpPort string `mapstructure:"HTTP_PORT"`
+	MySqlUrl          string `mapstructure:"MYSQL_URL"`
+	RedisUrl          string `mapstructure:"REDIS_URL"`
+	HttpPort          string `mapstructure:"HTTP_PORT"`
+	TokenSymmetricKey string `mapstructure:"TOKEN_SYMMETRIC_KEY"`
 }
 
 func LoadConfig() (config *Config) {
