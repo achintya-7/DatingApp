@@ -1,11 +1,14 @@
 package logger
 
 import (
-	"context"
 	"fmt"
 
 	"go.uber.org/zap"
 )
+
+type LoggerContext interface {
+	Value(key any) any
+}
 
 func LoadLogger() {
 	logger, err := zap.NewDevelopment(
@@ -22,7 +25,7 @@ func LoadLogger() {
 	zap.L().Info("Logger initialized")
 }
 
-func Info(ctx context.Context, msg ...any) {
+func Info(ctx LoggerContext, msg ...any) {
 	if ctx == nil {
 		zap.L().Info(fmt.Sprintf("%v", msg...))
 		return
@@ -37,7 +40,7 @@ func Info(ctx context.Context, msg ...any) {
 	zap.L().Info(fmt.Sprintf("[Correlation ID: %s] %s", correlationID, fmt.Sprint(msg...)))
 }
 
-func Error(ctx context.Context, msg ...any) {
+func Error(ctx LoggerContext, msg ...any) {
 	if ctx == nil {
 		zap.L().Error(fmt.Sprintf("%v", msg...))
 		return
@@ -52,7 +55,7 @@ func Error(ctx context.Context, msg ...any) {
 	zap.L().Error(fmt.Sprintf("[Correlation ID: %s] %s", correlationID, fmt.Sprint(msg...)))
 }
 
-func Debug(ctx context.Context, msg ...any) {
+func Debug(ctx LoggerContext, msg ...any) {
 	if ctx == nil {
 		zap.L().Debug(fmt.Sprintf("%v", msg...))
 		return
@@ -67,7 +70,7 @@ func Debug(ctx context.Context, msg ...any) {
 	zap.L().Debug(fmt.Sprintf("[Correlation ID: %s] %s", correlationID, fmt.Sprint(msg...)))
 }
 
-func Warn(ctx context.Context, msg ...any) {
+func Warn(ctx LoggerContext, msg ...any) {
 	if ctx == nil {
 		zap.L().Warn(fmt.Sprintf("%v", msg...))
 		return
@@ -82,7 +85,7 @@ func Warn(ctx context.Context, msg ...any) {
 	zap.L().Warn(fmt.Sprintf("[Correlation ID: %s] %s", correlationID, fmt.Sprint(msg...)))
 }
 
-func Fatal(ctx context.Context, msg ...any) {
+func Fatal(ctx LoggerContext, msg ...any) {
 	if ctx == nil {
 		zap.L().Fatal(fmt.Sprintf("%v", msg...))
 		return
