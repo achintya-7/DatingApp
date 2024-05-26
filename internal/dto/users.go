@@ -23,3 +23,11 @@ type DiscoverV2Request struct {
 	} `json:"age"`
 	Gender string `json:"gender,omitempty"`
 }
+
+type DiscoverV2Response struct {
+	UserID   string  `json:"user_id"`
+	Name     string  `json:"name"`
+	Gender   string  `json:"gender"`
+	Age      int32   `json:"age"`
+	Distance float64 `json:"distance"`
+}

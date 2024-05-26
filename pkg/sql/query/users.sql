@@ -3,7 +3,7 @@ INSERT INTO Users (user_id, email, password, name, gender, age, latitude, longit
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW()); 
 
 -- name: GetUserByEmail :one
-SELECT user_id, email, password, name
+SELECT *
 FROM Users
 WHERE email = ?;
 
@@ -17,12 +17,12 @@ WHERE user_id NOT IN (
 );
 
 -- name: DiscoverUsersV2 :many
-SELECT user_id, name, gender, age
+SELECT user_id, name, gender, age, latitude, longitude
 FROM Users
 WHERE user_id NOT IN (
     SELECT swipee_id
     FROM Swipes
-    WHERE swiper_id = $1
+    WHERE swiper_id = ?
 ) 
 AND age >= COALESCE(sqlc.narg(greater_than_age), age)
 AND age <= COALESCE(sqlc.narg(lower_than_age), age)

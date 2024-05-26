@@ -85,12 +85,12 @@ func (q *Queries) DiscoverUsersV1(ctx context.Context, swiperID string) ([]Disco
 }
 
 const discoverUsersV2 = `-- name: DiscoverUsersV2 :many
-SELECT user_id, name, gender, age
+SELECT user_id, name, gender, age, latitude, longitude
 FROM Users
 WHERE user_id NOT IN (
     SELECT swipee_id
     FROM Swipes
-    WHERE swiper_id = $1
+    WHERE swiper_id = ?
 ) 
 AND age >= COALESCE(?, age)
 AND age <= COALESCE(?, age)
@@ -98,20 +98,28 @@ AND gender = COALESCE(?, gender)
 `
 
 type DiscoverUsersV2Params struct {
+	SwiperID       string         `json:"swiper_id"`
 	GreaterThanAge sql.NullInt32  `json:"greater_than_age"`
 	LowerThanAge   sql.NullInt32  `json:"lower_than_age"`
 	Gender         sql.NullString `json:"gender"`
 }
 
 type DiscoverUsersV2Row struct {
-	UserID string `json:"user_id"`
-	Name   string `json:"name"`
-	Gender string `json:"gender"`
-	Age    int32  `json:"age"`
+	UserID    string  `json:"user_id"`
+	Name      string  `json:"name"`
+	Gender    string  `json:"gender"`
+	Age       int32   `json:"age"`
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
 }
 
 func (q *Queries) DiscoverUsersV2(ctx context.Context, arg DiscoverUsersV2Params) ([]DiscoverUsersV2Row, error) {
-	rows, err := q.db.QueryContext(ctx, discoverUsersV2, arg.GreaterThanAge, arg.LowerThanAge, arg.Gender)
+	rows, err := q.db.QueryContext(ctx, discoverUsersV2,
+		arg.SwiperID,
+		arg.GreaterThanAge,
+		arg.LowerThanAge,
+		arg.Gender,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -124,6 +132,8 @@ func (q *Queries) DiscoverUsersV2(ctx context.Context, arg DiscoverUsersV2Params
 			&i.Name,
 			&i.Gender,
 			&i.Age,
+			&i.Latitude,
+			&i.Longitude,
 		); err != nil {
 			return nil, err
 		}
@@ -139,26 +149,25 @@ func (q *Queries) DiscoverUsersV2(ctx context.Context, arg DiscoverUsersV2Params
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT user_id, email, password, name
+SELECT user_id, email, password, name, gender, age, latitude, longitude, created_at, updated_at
 FROM Users
 WHERE email = ?
 `
 
-type GetUserByEmailRow struct {
-	UserID   string `json:"user_id"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Name     string `json:"name"`
-}
-
-func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
 	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
-	var i GetUserByEmailRow
+	var i User
 	err := row.Scan(
 		&i.UserID,
 		&i.Email,
 		&i.Password,
 		&i.Name,
+		&i.Gender,
+		&i.Age,
+		&i.Latitude,
+		&i.Longitude,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
