@@ -107,13 +107,13 @@ type DiscoverUsersV2Params struct {
 }
 
 type DiscoverUsersV2Row struct {
-	UserID              string         `json:"user_id"`
-	Name                string         `json:"name"`
-	Gender              string         `json:"gender"`
-	Age                 int32          `json:"age"`
-	Latitude            float64        `json:"latitude"`
-	Longitude           float64        `json:"longitude"`
-	AttractivenessScore sql.NullString `json:"attractiveness_score"`
+	UserID              string          `json:"user_id"`
+	Name                string          `json:"name"`
+	Gender              string          `json:"gender"`
+	Age                 int32           `json:"age"`
+	Latitude            float64         `json:"latitude"`
+	Longitude           float64         `json:"longitude"`
+	AttractivenessScore sql.NullFloat64 `json:"attractiveness_score"`
 }
 
 func (q *Queries) DiscoverUsersV2(ctx context.Context, arg DiscoverUsersV2Params) ([]DiscoverUsersV2Row, error) {

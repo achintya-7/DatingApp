@@ -60,10 +60,10 @@ type Match struct {
 }
 
 type Ranking struct {
-	UserID              string `json:"user_id"`
-	LikeCount           int32  `json:"like_count"`
-	DislikeCount        int32  `json:"dislike_count"`
-	AttractivenessScore string `json:"attractiveness_score"`
+	UserID              string  `json:"user_id"`
+	LikeCount           int32   `json:"like_count"`
+	DislikeCount        int32   `json:"dislike_count"`
+	AttractivenessScore float64 `json:"attractiveness_score"`
 }
 
 type Swipe struct {
