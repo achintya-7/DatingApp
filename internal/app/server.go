@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/achintya-7/dating-app/config"
-	v1 "github.com/achintya-7/dating-app/internal/controllers"
+	"github.com/achintya-7/dating-app/internal/controllers"
 	"github.com/achintya-7/dating-app/internal/middleware"
 	"github.com/achintya-7/dating-app/logger"
 	db "github.com/achintya-7/dating-app/pkg/sql/sqlc"
@@ -62,8 +62,12 @@ func (s *Server) setupRouter() {
 	baseRouter.Use(middleware.SetCorrelationIdMiddleware())
 
 	// Setup v1 routes
-	v1Router := v1.NewRouter(s.store, s.tokenMaker)
+	v1Router := controllers.NewV1Router(s.store, s.tokenMaker)
 	v1Router.SetupRoutes(baseRouter)
+
+	// Setup v2 routes
+	v2Router := controllers.NewV2Router(s.store, s.tokenMaker)
+	v2Router.SetupRoutes(baseRouter)
 
 	// Setup CORS middleware
 	router.Use(middleware.CorsMiddleware())

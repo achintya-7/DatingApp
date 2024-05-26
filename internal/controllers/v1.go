@@ -14,7 +14,7 @@ type Router struct {
 	tokenMaker *token.PasetoMaker
 }
 
-func NewRouter(store *db.Store, tokenMaker *token.PasetoMaker) *Router {
+func NewV1Router(store *db.Store, tokenMaker *token.PasetoMaker) *Router {
 	return &Router{
 		handlers:   v1.NewRouteHandler(store, tokenMaker),
 		tokenMaker: tokenMaker,
