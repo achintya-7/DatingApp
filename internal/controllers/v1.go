@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"github.com/achintya-7/dating-app/internal/dto"
 	v1 "github.com/achintya-7/dating-app/internal/handlers/v1"
 	db "github.com/achintya-7/dating-app/pkg/sql/sqlc"
 	"github.com/achintya-7/dating-app/pkg/token"
@@ -10,21 +9,30 @@ import (
 )
 
 type Router struct {
-	handlers *v1.RouteHandler
+	handlers   *v1.RouteHandler
+	tokenMaker *token.PasetoMaker
 }
 
 func NewRouter(store *db.Store, tokenMaker *token.PasetoMaker) *Router {
 	return &Router{
-		handlers: v1.NewRouteHandler(store, tokenMaker),
+		handlers:   v1.NewRouteHandler(store, tokenMaker),
+		tokenMaker: tokenMaker,
 	}
 }
 
-func (s *Router) SetupRoutes(router *gin.RouterGroup) {
+func (r *Router) SetupRoutes(router *gin.RouterGroup) {
 	v1Route := router.Group("/v1")
 
-	v1Route.POST("/login", utils.HandlerWrapper[dto.LoginResponse](s.handlers.Login))
+	v1Route.POST("/login", utils.HandlerWrapper(r.handlers.Login))
+
+	// Apply auth middleware
+	// v1Route.Use(middleware.AuthMiddleware(*r.tokenMaker))
 
 	// Setup user routes
 	usersRoute := v1Route.Group("/users")
-	usersRoute.POST("/create", utils.HandlerWrapper[dto.CreateUserResponse](s.handlers.CreateUser))
+	usersRoute.POST("/create", utils.HandlerWrapper(r.handlers.CreateUser))
+
+	// Setup match routes
+	matchRoute := v1Route.Group("/match")
+	matchRoute.POST("/match", utils.HandlerWrapper[gin.H](r.handlers.Match))
 }
