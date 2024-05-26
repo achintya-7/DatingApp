@@ -1,14 +1,16 @@
-package v1
+package v2
 
 import (
+	"github.com/achintya-7/dating-app/constants"
 	"github.com/achintya-7/dating-app/internal/dto"
 	"github.com/achintya-7/dating-app/internal/middleware"
 	db "github.com/achintya-7/dating-app/pkg/sql/sqlc"
 	"github.com/achintya-7/dating-app/pkg/token"
+	"github.com/achintya-7/dating-app/pkg/worker"
 	"github.com/gin-gonic/gin"
 )
 
-func (rh *RouteHandler) SwipeUser(ctx *gin.Context) (*gin.H, *dto.ErrorResponse) {
+func (rh *RouteHandler) SwipeUserV2(ctx *gin.Context) (*gin.H, *dto.ErrorResponse) {
 	var req dto.SwipeRequest
 	var resp gin.H
 
@@ -54,6 +56,26 @@ func (rh *RouteHandler) SwipeUser(ctx *gin.Context) (*gin.H, *dto.ErrorResponse)
 			"matched": false,
 		}
 	}
+
+	correlationId := ctx.GetString(constants.CORRELATION_ID)
+
+	// send an email to both users
+	emailPayload := worker.SendMatchEmailTaskPayload{
+		UserId: authPayload.UserId,
+		MatchedUserId: req.SwipedUserId,
+		CorrelationId: correlationId,
+	}
+
+	go rh.distributor.SendMatchedEmailTask(ctx, &emailPayload)
+
+	// send the swiped user's details for rank calculation
+	rankPayload := worker.CalculateUserAttractivenessTaskPayload{
+		Userid: req.SwipedUserId,
+		Response: req.Preference,
+		CorrelationId: correlationId,
+	}
+
+	go rh.distributor.CalculateUserAttractivenessTask(ctx, &rankPayload)
 
 	return &resp, nil
 }

@@ -8,15 +8,21 @@ import (
 	"github.com/achintya-7/dating-app/internal/controllers"
 	"github.com/achintya-7/dating-app/internal/middleware"
 	"github.com/achintya-7/dating-app/logger"
+	"github.com/achintya-7/dating-app/pkg/mail"
 	db "github.com/achintya-7/dating-app/pkg/sql/sqlc"
 	"github.com/achintya-7/dating-app/pkg/token"
+	distributor "github.com/achintya-7/dating-app/pkg/worker/distributor"
+	processor "github.com/achintya-7/dating-app/pkg/worker/processor"
 	"github.com/gin-gonic/gin"
+	"github.com/hibiken/asynq"
 )
 
 type Server struct {
-	router     *gin.Engine
-	store      *db.Store
-	tokenMaker *token.PasetoMaker
+	router      *gin.Engine
+	store       *db.Store
+	tokenMaker  *token.PasetoMaker
+	distributor distributor.TaskDistributor
+	processor   *processor.RedisTaskProcessor
 }
 
 func NewServer() *Server {
@@ -24,6 +30,7 @@ func NewServer() *Server {
 
 	server.setupDatbases()
 	server.setupClient()
+	server.setupWorker()
 	server.setupRouter()
 
 	return server
@@ -49,6 +56,23 @@ func (s *Server) setupClient() {
 	s.tokenMaker = tokenMaker
 }
 
+func (s *Server) setupWorker() {
+	redisOpt := asynq.RedisClientOpt{
+		Addr: config.Values.RedisUrl,
+	}
+
+	taskDistributor := distributor.NewRedisTaskDistributor(redisOpt)
+
+	// Create a mail sender
+	mailer := mail.NewGmailSender(config.Values.EmailName, config.Values.EmailAddress, config.Values.EmailPassowrd)
+
+	// Create a processor instance
+	redisTaskProcessor := processor.NewRedisTaskProcessor(redisOpt, s.store, mailer)
+
+	s.distributor = taskDistributor
+	s.processor = redisTaskProcessor
+}
+
 func (s *Server) setupRouter() {
 	router := gin.Default()
 
@@ -66,7 +90,7 @@ func (s *Server) setupRouter() {
 	v1Router.SetupRoutes(baseRouter)
 
 	// Setup v2 routes
-	v2Router := controllers.NewV2Router(s.store, s.tokenMaker)
+	v2Router := controllers.NewV2Router(s.store, s.tokenMaker, s.distributor)
 	v2Router.SetupRoutes(baseRouter)
 
 	// Setup CORS middleware
@@ -76,6 +100,14 @@ func (s *Server) setupRouter() {
 }
 
 func (s *Server) Start() error {
+	go func() {
+		logger.Info(nil, "starting task processor")
+		err := s.processor.Start()
+		if err != nil {
+			logger.Fatal(nil, "cannot start task processor")
+		}
+	}()
+
 	port := config.Values.HttpPort
 	port = ":" + port
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/achintya-7/dating-app/constants"
 	"github.com/achintya-7/dating-app/logger"
 	db "github.com/achintya-7/dating-app/pkg/sql/sqlc"
 	"github.com/achintya-7/dating-app/pkg/worker"
@@ -16,24 +17,37 @@ func (processor *RedisTaskProcessor) SendMatchedEmailProcessor(ctx context.Conte
 		return err
 	}
 
+	ctx.Value(constants.CORRELATION_ID)
+
 	logger.Info(ctx, "processing send email task")
 
+	user, err := processor.store.GetUserById(ctx, payload.UserId)
+	if err != nil {
+		return err
+	}
+
+	matchedUser, err := processor.store.GetUserById(ctx, payload.MatchedUserId)
+	if err != nil {
+		return err
+	}
+
 	// send email to user
-	subject := "You have a new match!"
-	body := worker.EmailBodyBuilder(payload.UserName, payload.MatchedUserName)
-	body2 := worker.EmailBodyBuilder(payload.MatchedUserName, payload.UserName)
+	subject := "Welcome to Dating App!"
+	body := worker.EmailBodyBuilder(user.Name, matchedUser.Name)
+	body2 := worker.EmailBodyBuilder(matchedUser.Name, user.Name)
 
 	// create a channel to handle errors
 	errChan := make(chan error, 2)
 
+	// send email to both users in parallel
 	go func() {
-		to := []string{payload.UserEmail}
+		to := []string{user.Email}
 		err := processor.mailer.SendEmail(subject, body, to, nil, nil, nil)
 		errChan <- err
 	}()
 
 	go func() {
-		to := []string{payload.MatchedUserEmail}
+		to := []string{matchedUser.Email}
 		err := processor.mailer.SendEmail(subject, body2, to, nil, nil, nil)
 		errChan <- err
 	}()

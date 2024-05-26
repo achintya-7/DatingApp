@@ -12,6 +12,9 @@ type Config struct {
 	RedisUrl          string `mapstructure:"REDIS_URL"`
 	HttpPort          string `mapstructure:"HTTP_PORT"`
 	TokenSymmetricKey string `mapstructure:"TOKEN_SYMMETRIC_KEY"`
+	EmailName         string `mapstructure:"EMAIL_NAME"`
+	EmailAddress      string `mapstructure:"EMAIL_ADDRESS"`
+	EmailPassowrd     string `mapstructure:"EMAIL_PASSWORD"`
 }
 
 func LoadConfig() (config *Config) {

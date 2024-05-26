@@ -37,6 +37,6 @@ func (r *Router) SetupRoutes(router *gin.RouterGroup) {
 	usersRoute.POST("/discover", utils.HandlerWrapper(r.handlers.DiscoverV1))
 
 	// Setup match routes
-	matchRoute := v1Route.Group("/swipe")
-	matchRoute.POST("/", utils.HandlerWrapper[gin.H](r.handlers.SwipeUser))
+	swipeRoute := v1Route.Group("/swipe")
+	swipeRoute.POST("/", utils.HandlerWrapper(r.handlers.SwipeUser))
 }

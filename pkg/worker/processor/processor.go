@@ -33,7 +33,8 @@ func NewRedisTaskProcessor(redisOpt asynq.RedisClientOpt, store *db.Store, maile
 func (processor *RedisTaskProcessor) Start() error {
 	mux := asynq.NewServeMux()
 
-	// mux.HandleFunc(worker.TASK_SEND_MATCHED_EMAIL, processor)
+	mux.HandleFunc(worker.TASK_SEND_MATCHED_EMAIL, processor.SendMatchedEmailProcessor)
+	mux.HandleFunc(worker.TASK_CALCULATE_USER_ATTRACTIVENESS, processor.CalculateUserAttractivenessProcessor)
 
 	return processor.server.Start(mux)
 }

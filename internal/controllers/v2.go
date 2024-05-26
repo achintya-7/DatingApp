@@ -5,6 +5,7 @@ import (
 	"github.com/achintya-7/dating-app/internal/middleware"
 	db "github.com/achintya-7/dating-app/pkg/sql/sqlc"
 	"github.com/achintya-7/dating-app/pkg/token"
+	distributor "github.com/achintya-7/dating-app/pkg/worker/distributor"
 	"github.com/achintya-7/dating-app/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -14,9 +15,9 @@ type V2Router struct {
 	tokenMaker *token.PasetoMaker
 }
 
-func NewV2Router(store *db.Store, tokenMaker *token.PasetoMaker) *V2Router {
+func NewV2Router(store *db.Store, tokenMaker *token.PasetoMaker, distributor distributor.TaskDistributor) *V2Router {
 	return &V2Router{
-		handlers:   v2.NewRouteHandler(store, tokenMaker),
+		handlers:   v2.NewRouteHandler(store, tokenMaker, distributor),
 		tokenMaker: tokenMaker,
 	}
 }

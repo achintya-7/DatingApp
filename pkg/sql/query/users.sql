@@ -7,6 +7,11 @@ SELECT *
 FROM Users
 WHERE email = ?;
 
+-- name: GetUserById :one
+SELECT *
+FROM Users
+WHERE user_id = ?;
+
 -- name: DiscoverUsersV1 :many
 SELECT user_id, name, gender, age
 FROM Users

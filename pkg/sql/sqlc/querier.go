@@ -20,6 +20,7 @@ type Querier interface {
 	GetMatches(ctx context.Context, arg GetMatchesParams) ([]Match, error)
 	GetRankingByUserId(ctx context.Context, userID string) (Ranking, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
+	GetUserById(ctx context.Context, userID string) (User, error)
 	UpdateRanking(ctx context.Context, arg UpdateRankingParams) (sql.Result, error)
 }
 

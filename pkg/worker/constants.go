@@ -13,13 +13,9 @@ const (
 )
 
 type SendMatchEmailTaskPayload struct {
-	UserId           string
-	UserEmail        string
-	UserName         string
-	MatchedUserId    string
-	MatchedUserEmail string
-	MatchedUserName  string
-	CorrelationId    string
+	UserId        string
+	MatchedUserId string
+	CorrelationId string
 }
 
 type CalculateUserAttractivenessTaskPayload struct {
