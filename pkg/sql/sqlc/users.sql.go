@@ -39,6 +39,105 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (sql.Res
 	)
 }
 
+const discoverUsersV1 = `-- name: DiscoverUsersV1 :many
+SELECT user_id, name, gender, age
+FROM Users
+WHERE user_id NOT IN (
+    SELECT swipee_id
+    FROM Swipes
+    WHERE swiper_id = ?
+)
+`
+
+type DiscoverUsersV1Row struct {
+	UserID string `json:"user_id"`
+	Name   string `json:"name"`
+	Gender string `json:"gender"`
+	Age    int32  `json:"age"`
+}
+
+func (q *Queries) DiscoverUsersV1(ctx context.Context, swiperID string) ([]DiscoverUsersV1Row, error) {
+	rows, err := q.db.QueryContext(ctx, discoverUsersV1, swiperID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []DiscoverUsersV1Row{}
+	for rows.Next() {
+		var i DiscoverUsersV1Row
+		if err := rows.Scan(
+			&i.UserID,
+			&i.Name,
+			&i.Gender,
+			&i.Age,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const discoverUsersV2 = `-- name: DiscoverUsersV2 :many
+SELECT user_id, name, gender, age
+FROM Users
+WHERE user_id NOT IN (
+    SELECT swipee_id
+    FROM Swipes
+    WHERE swiper_id = $1
+) 
+AND age >= COALESCE(?, age)
+AND age <= COALESCE(?, age)
+AND gender = COALESCE(?, gender)
+`
+
+type DiscoverUsersV2Params struct {
+	GreaterThanAge sql.NullInt32  `json:"greater_than_age"`
+	LowerThanAge   sql.NullInt32  `json:"lower_than_age"`
+	Gender         sql.NullString `json:"gender"`
+}
+
+type DiscoverUsersV2Row struct {
+	UserID string `json:"user_id"`
+	Name   string `json:"name"`
+	Gender string `json:"gender"`
+	Age    int32  `json:"age"`
+}
+
+func (q *Queries) DiscoverUsersV2(ctx context.Context, arg DiscoverUsersV2Params) ([]DiscoverUsersV2Row, error) {
+	rows, err := q.db.QueryContext(ctx, discoverUsersV2, arg.GreaterThanAge, arg.LowerThanAge, arg.Gender)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []DiscoverUsersV2Row{}
+	for rows.Next() {
+		var i DiscoverUsersV2Row
+		if err := rows.Scan(
+			&i.UserID,
+			&i.Name,
+			&i.Gender,
+			&i.Age,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getUserByEmail = `-- name: GetUserByEmail :one
 SELECT user_id, email, password, name
 FROM Users

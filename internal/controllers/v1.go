@@ -33,6 +33,9 @@ func (r *Router) SetupRoutes(router *gin.RouterGroup) {
 	// Apply auth middleware
 	v1Route.Use(middleware.AuthMiddleware(*r.tokenMaker))
 
+	// User Discovery route V1
+	usersRoute.POST("/discover", utils.HandlerWrapper(r.handlers.DiscoverV1))
+
 	// Setup match routes
 	matchRoute := v1Route.Group("/swipe")
 	matchRoute.POST("/", utils.HandlerWrapper[gin.H](r.handlers.SwipeUser))

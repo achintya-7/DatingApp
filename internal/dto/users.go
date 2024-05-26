@@ -15,3 +15,11 @@ type CreateUserResponse struct {
 	Email string `json:"email"`
 	Name  string `json:"name"`
 }
+
+type DiscoverV2Request struct {
+	Age struct {
+		LessThan    *int32 `json:"less_than"`
+		GreaterThan *int32 `json:"greater_than" binding:"gte=18"`
+	} `json:"age"`
+	Gender string `json:"gender,omitempty"`
+}

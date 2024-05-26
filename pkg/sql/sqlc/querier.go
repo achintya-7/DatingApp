@@ -14,6 +14,8 @@ type Querier interface {
 	CreateMatch(ctx context.Context, arg CreateMatchParams) (sql.Result, error)
 	CreateSwipe(ctx context.Context, arg CreateSwipeParams) (sql.Result, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (sql.Result, error)
+	DiscoverUsersV1(ctx context.Context, swiperID string) ([]DiscoverUsersV1Row, error)
+	DiscoverUsersV2(ctx context.Context, arg DiscoverUsersV2Params) ([]DiscoverUsersV2Row, error)
 	GetMatches(ctx context.Context, arg GetMatchesParams) ([]Match, error)
 	GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error)
 }
