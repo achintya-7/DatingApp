@@ -5,6 +5,7 @@ import (
 
 	"github.com/achintya-7/dating-app/constants"
 	"github.com/achintya-7/dating-app/internal/dto"
+	"github.com/achintya-7/dating-app/logger"
 	"github.com/achintya-7/dating-app/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -23,6 +24,7 @@ func (rh *RouteHandler) Login(ctx *gin.Context) (*dto.LoginResponse, *dto.ErrorR
 
 	user, err := rh.store.GetUserByEmail(ctx, req.Email)
 	if err != nil {
+		logger.Error(ctx, "Error getting user by email", err)
 		return nil, &dto.ErrorResponse{
 			Code:           http.StatusNotFound,
 			Message:        "User not found",

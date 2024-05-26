@@ -5,7 +5,7 @@ type CreateUserRequest struct {
 	Name      string  `json:"name" binding:"required"`
 	Password  string  `json:"password" binding:"required"`
 	Gender    string  `json:"gender" binding:"required"`
-	Age       int8    `json:"age" binding:"required, gte=18, lte=100"`
+	Age       int8    `json:"age" binding:"required,gte=18,lte=100"`
 	Latitude  float64 `json:"latitude" binding:"required"`
 	Longitude float64 `json:"longitude" binding:"required"`
 }
@@ -22,7 +22,7 @@ type CreateUserResponse struct {
 type DiscoverV2Request struct {
 	Age struct {
 		LessThan    *int32 `json:"less_than"`
-		GreaterThan *int32 `json:"greater_than" binding:"gte=18"`
+		GreaterThan *int32 `json:"greater_than"`
 	} `json:"age"`
 	Gender string `json:"gender,omitempty"`
 }

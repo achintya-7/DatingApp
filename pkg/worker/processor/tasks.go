@@ -17,7 +17,7 @@ func (processor *RedisTaskProcessor) SendMatchedEmailProcessor(ctx context.Conte
 		return err
 	}
 
-	ctx.Value(constants.CORRELATION_ID)
+	ctx = context.WithValue(ctx, constants.CORRELATION_ID, payload.CorrelationId)
 
 	logger.Info(ctx, "processing send email task")
 
@@ -67,6 +67,8 @@ func (processor *RedisTaskProcessor) CalculateUserAttractivenessProcessor(ctx co
 	if err := json.Unmarshal(task.Payload(), &payload); err != nil {
 		return err
 	}
+
+	ctx = context.WithValue(ctx, constants.CORRELATION_ID, payload.CorrelationId)
 
 	logger.Info(ctx, "processing calculate user attractiveness task")
 

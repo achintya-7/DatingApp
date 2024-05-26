@@ -11,8 +11,8 @@ type AddSwipeTx struct {
 	User2Id string
 }
 
-func (store *Store) AddMatchTx(ctx *gin.Context, arg AddSwipeTx) (*CreateMatchParams, error) {
-	var match CreateMatchParams
+func (store *Store) AddMatchTx(ctx *gin.Context, arg AddSwipeTx) (CreateMatchParams, error) {
+	match := CreateMatchParams{}
 
 	// * PS: Do use the `q` object to execute queries in the transaction, not the `store` object as it will
 	// * not be part of the transaction and will not be able to rollback the transaction in case of an error
@@ -23,7 +23,7 @@ func (store *Store) AddMatchTx(ctx *gin.Context, arg AddSwipeTx) (*CreateMatchPa
 			SwipeID:   uuid.New().String(),
 			SwiperID:  arg.User1Id,
 			SwipeeID:  arg.User2Id,
-			SwipeType: NullSwipesSwipeType{SwipesSwipeTypeYES, true},
+			SwipeType: SwipesSwipeTypeYES,
 		}
 
 		_, err := q.CreateSwipe(ctx, CreateSwipeArgs)
@@ -67,8 +67,8 @@ func (store *Store) AddMatchTx(ctx *gin.Context, arg AddSwipeTx) (*CreateMatchPa
 	})
 
 	if err != nil {
-		return nil, err
+		return match, err
 	}
 
-	return &match, nil
+	return match, nil
 }

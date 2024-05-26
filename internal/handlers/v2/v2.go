@@ -16,5 +16,6 @@ func NewRouteHandler(store *db.Store, tokenMaken *token.PasetoMaker, distributor
 	return &RouteHandler{
 		store:     store,
 		tokenMake: tokenMaken,
+		distributor: distributor,
 	}
 }

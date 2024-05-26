@@ -69,10 +69,20 @@ func (rh *RouteHandler) DiscoverV2(ctx *gin.Context) (*[]dto.DiscoverV2Response,
 	var resp []dto.DiscoverV2Response
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(400, gin.H{"error": err.Error()})
+		if err.Error() != "EOF" {
+			logger.Error(ctx, "Error while binding request: ", err)
+			return nil, &dto.ErrorResponse{
+				Code:           400,
+				Message:        "Invalid request",
+				HttpStatusCode: 400,
+			}
+		}
+	}
+
+	if req.Age.LessThan != nil && *req.Age.LessThan <= 18 {
 		return nil, &dto.ErrorResponse{
 			Code:           400,
-			Message:        "Invalid JSON body :" + err.Error(),
+			Message:        "Age should be greater than 18",
 			HttpStatusCode: 400,
 		}
 	}
@@ -84,6 +94,7 @@ func (rh *RouteHandler) DiscoverV2(ctx *gin.Context) (*[]dto.DiscoverV2Response,
 		LowerThanAge:   utils.GetNullInt(req.Age.LessThan),
 		Gender:         utils.GetNullString(req.Gender),
 		SwiperID:       authPayload.UserId,
+		UserID:         authPayload.UserId,
 	}
 
 	users, err := rh.store.DiscoverUsersV2(ctx, discoverV2Args)
@@ -95,6 +106,14 @@ func (rh *RouteHandler) DiscoverV2(ctx *gin.Context) (*[]dto.DiscoverV2Response,
 		}
 	}
 
+	if len(users) == 0 {
+		return nil, &dto.ErrorResponse{
+			Code:           404,
+			Message:        "No users found",
+			HttpStatusCode: 404,
+		}
+	}
+
 	currentUser, err := rh.store.GetUserByEmail(ctx, authPayload.Email)
 	if err != nil {
 		return nil, &dto.ErrorResponse{
@@ -103,6 +122,7 @@ func (rh *RouteHandler) DiscoverV2(ctx *gin.Context) (*[]dto.DiscoverV2Response,
 			HttpStatusCode: 500,
 		}
 	}
+	
 
 	for _, user := range users {
 		distance := utils.CalculateDistance(currentUser.Latitude, currentUser.Longitude, user.Latitude, user.Longitude, "K")

@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/achintya-7/dating-app/internal/dto"
+	"github.com/achintya-7/dating-app/internal/middleware"
 	"github.com/achintya-7/dating-app/logger"
 	db "github.com/achintya-7/dating-app/pkg/sql/sqlc"
 	"github.com/achintya-7/dating-app/pkg/token"
@@ -69,9 +70,14 @@ func (rh *RouteHandler) CreateUser(ctx *gin.Context) (*dto.CreateUserResponse, *
 }
 
 func (rh *RouteHandler) DiscoverV1(ctx *gin.Context) (*[]db.DiscoverUsersV1Row, *dto.ErrorResponse) {
-	authPayload := ctx.MustGet("authPayload").(*token.Payload)
+	authPayload := ctx.MustGet(middleware.AUTHORIZATION_PAYLOAD).(*token.Payload)
 
-	users, err := rh.store.DiscoverUsersV1(ctx, authPayload.UserId)
+	discoverUserArgs := db.DiscoverUsersV1Params{
+		UserID:   authPayload.UserId,
+		SwiperID: authPayload.UserId,
+	}
+
+	users, err := rh.store.DiscoverUsersV1(ctx, discoverUserArgs)
 	if err != nil {
 		return nil, &dto.ErrorResponse{
 			Code:           500,

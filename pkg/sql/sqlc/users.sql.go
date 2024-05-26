@@ -47,7 +47,13 @@ WHERE user_id NOT IN (
     FROM Swipes
     WHERE swiper_id = ?
 )
+AND user_id != ?
 `
+
+type DiscoverUsersV1Params struct {
+	SwiperID string `json:"swiper_id"`
+	UserID   string `json:"user_id"`
+}
 
 type DiscoverUsersV1Row struct {
 	UserID string `json:"user_id"`
@@ -56,8 +62,8 @@ type DiscoverUsersV1Row struct {
 	Age    int32  `json:"age"`
 }
 
-func (q *Queries) DiscoverUsersV1(ctx context.Context, swiperID string) ([]DiscoverUsersV1Row, error) {
-	rows, err := q.db.QueryContext(ctx, discoverUsersV1, swiperID)
+func (q *Queries) DiscoverUsersV1(ctx context.Context, arg DiscoverUsersV1Params) ([]DiscoverUsersV1Row, error) {
+	rows, err := q.db.QueryContext(ctx, discoverUsersV1, arg.SwiperID, arg.UserID)
 	if err != nil {
 		return nil, err
 	}
@@ -93,6 +99,7 @@ WHERE u.user_id NOT IN (
     FROM Swipes
     WHERE swiper_id = ?
 ) 
+AND u.user_id != ?
 AND u.age >= COALESCE(?, u.age)
 AND u.age <= COALESCE(?, u.age)
 AND u.gender = COALESCE(?, u.gender)
@@ -101,6 +108,7 @@ ORDER BY r.attractiveness_score DESC
 
 type DiscoverUsersV2Params struct {
 	SwiperID       string         `json:"swiper_id"`
+	UserID         string         `json:"user_id"`
 	GreaterThanAge sql.NullInt32  `json:"greater_than_age"`
 	LowerThanAge   sql.NullInt32  `json:"lower_than_age"`
 	Gender         sql.NullString `json:"gender"`
@@ -119,6 +127,7 @@ type DiscoverUsersV2Row struct {
 func (q *Queries) DiscoverUsersV2(ctx context.Context, arg DiscoverUsersV2Params) ([]DiscoverUsersV2Row, error) {
 	rows, err := q.db.QueryContext(ctx, discoverUsersV2,
 		arg.SwiperID,
+		arg.UserID,
 		arg.GreaterThanAge,
 		arg.LowerThanAge,
 		arg.Gender,

@@ -30,8 +30,14 @@ func (r *V2Router) SetupRoutes(router *gin.RouterGroup) {
 	usersRoute.POST("/create", utils.HandlerWrapper(r.handlers.CreateUserV2))
 
 	// Apply auth middleware
-	v2Route.Use(middleware.AuthMiddleware(*r.tokenMaker))
+	authRoute := v2Route.Group("/")
+	authRoute.Use(middleware.AuthMiddleware(*r.tokenMaker))
 
 	// User Discovery route V2
-	usersRoute.POST("/discover", utils.HandlerWrapper(r.handlers.DiscoverV2))
+	userAuthRoute := authRoute.Group("/users")
+	userAuthRoute.POST("/discover", utils.HandlerWrapper(r.handlers.DiscoverV2))
+
+	// Setup swipe routes
+	swipeRoute := authRoute.Group("/swipe")
+	swipeRoute.POST("/", utils.HandlerWrapper(r.handlers.SwipeUserV2))
 }

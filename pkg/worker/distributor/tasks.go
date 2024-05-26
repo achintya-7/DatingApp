@@ -21,7 +21,7 @@ func (distributor *RedisTaskDistributor) SendMatchedEmailTask(
 
 	opts := []asynq.Option{
 		asynq.MaxRetry(10),
-		asynq.ProcessIn(30 * time.Second),
+		asynq.ProcessIn(5 * time.Second),
 		asynq.Queue(worker.QUEUE_CRITICAL),
 	}
 
@@ -47,7 +47,7 @@ func (rtd *RedisTaskDistributor) CalculateUserAttractivenessTask(
 
 	opts := []asynq.Option{
 		asynq.MaxRetry(10),
-		asynq.ProcessIn(30 * time.Second),
+		asynq.ProcessIn(5 * time.Second),
 		asynq.Queue(worker.QUEUE_DEFAULT),
 	}
 

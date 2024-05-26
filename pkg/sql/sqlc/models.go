@@ -5,9 +5,9 @@
 package db
 
 import (
-	"database/sql"
 	"database/sql/driver"
 	"fmt"
+	"time"
 )
 
 type SwipesSwipeType string
@@ -53,10 +53,10 @@ func (ns NullSwipesSwipeType) Value() (driver.Value, error) {
 }
 
 type Match struct {
-	MatchID   string       `json:"match_id"`
-	User1ID   string       `json:"user1_id"`
-	User2ID   string       `json:"user2_id"`
-	CreatedAt sql.NullTime `json:"created_at"`
+	MatchID   string    `json:"match_id"`
+	User1ID   string    `json:"user1_id"`
+	User2ID   string    `json:"user2_id"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type Ranking struct {
@@ -67,22 +67,22 @@ type Ranking struct {
 }
 
 type Swipe struct {
-	SwipeID   string              `json:"swipe_id"`
-	SwiperID  string              `json:"swiper_id"`
-	SwipeeID  string              `json:"swipee_id"`
-	SwipeType NullSwipesSwipeType `json:"swipe_type"`
-	CreatedAt sql.NullTime        `json:"created_at"`
+	SwipeID   string          `json:"swipe_id"`
+	SwiperID  string          `json:"swiper_id"`
+	SwipeeID  string          `json:"swipee_id"`
+	SwipeType SwipesSwipeType `json:"swipe_type"`
+	CreatedAt time.Time       `json:"created_at"`
 }
 
 type User struct {
-	UserID    string       `json:"user_id"`
-	Email     string       `json:"email"`
-	Password  string       `json:"password"`
-	Name      string       `json:"name"`
-	Gender    string       `json:"gender"`
-	Age       int32        `json:"age"`
-	Latitude  float64      `json:"latitude"`
-	Longitude float64      `json:"longitude"`
-	CreatedAt sql.NullTime `json:"created_at"`
-	UpdatedAt sql.NullTime `json:"updated_at"`
+	UserID    string    `json:"user_id"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
+	Name      string    `json:"name"`
+	Gender    string    `json:"gender"`
+	Age       int32     `json:"age"`
+	Latitude  float64   `json:"latitude"`
+	Longitude float64   `json:"longitude"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

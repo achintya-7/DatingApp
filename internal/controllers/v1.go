@@ -31,12 +31,14 @@ func (r *Router) SetupRoutes(router *gin.RouterGroup) {
 	usersRoute.POST("/create", utils.HandlerWrapper(r.handlers.CreateUser))
 
 	// Apply auth middleware
-	v1Route.Use(middleware.AuthMiddleware(*r.tokenMaker))
-
+	authRoute := v1Route.Group("/")
+	authRoute.Use(middleware.AuthMiddleware(*r.tokenMaker))
+	
 	// User Discovery route V1
-	usersRoute.POST("/discover", utils.HandlerWrapper(r.handlers.DiscoverV1))
+	userAuthRoute := authRoute.Group("/users")
+	userAuthRoute.GET("/discover", utils.HandlerWrapper(r.handlers.DiscoverV1))
 
-	// Setup match routes
-	swipeRoute := v1Route.Group("/swipe")
-	swipeRoute.POST("/", utils.HandlerWrapper(r.handlers.SwipeUser))
+	// Setup swipe routes
+	swipeAuthRoute := authRoute.Group("/swipe")
+	swipeAuthRoute.POST("/", utils.HandlerWrapper(r.handlers.SwipeUser))
 }

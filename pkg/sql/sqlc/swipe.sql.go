@@ -35,10 +35,10 @@ VALUES (?, ?, ?, ?, NOW())
 `
 
 type CreateSwipeParams struct {
-	SwipeID   string              `json:"swipe_id"`
-	SwiperID  string              `json:"swiper_id"`
-	SwipeeID  string              `json:"swipee_id"`
-	SwipeType NullSwipesSwipeType `json:"swipe_type"`
+	SwipeID   string          `json:"swipe_id"`
+	SwiperID  string          `json:"swiper_id"`
+	SwipeeID  string          `json:"swipee_id"`
+	SwipeType SwipesSwipeType `json:"swipe_type"`
 }
 
 func (q *Queries) CreateSwipe(ctx context.Context, arg CreateSwipeParams) (sql.Result, error) {

@@ -15,7 +15,7 @@ type Querier interface {
 	CreateRanking(ctx context.Context, userID string) (sql.Result, error)
 	CreateSwipe(ctx context.Context, arg CreateSwipeParams) (sql.Result, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (sql.Result, error)
-	DiscoverUsersV1(ctx context.Context, swiperID string) ([]DiscoverUsersV1Row, error)
+	DiscoverUsersV1(ctx context.Context, arg DiscoverUsersV1Params) ([]DiscoverUsersV1Row, error)
 	DiscoverUsersV2(ctx context.Context, arg DiscoverUsersV2Params) ([]DiscoverUsersV2Row, error)
 	GetMatches(ctx context.Context, arg GetMatchesParams) ([]Match, error)
 	GetRankingByUserId(ctx context.Context, userID string) (Ranking, error)
