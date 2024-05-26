@@ -85,16 +85,18 @@ func (q *Queries) DiscoverUsersV1(ctx context.Context, swiperID string) ([]Disco
 }
 
 const discoverUsersV2 = `-- name: DiscoverUsersV2 :many
-SELECT user_id, name, gender, age, latitude, longitude
-FROM Users
-WHERE user_id NOT IN (
+SELECT u.user_id, u.name, u.gender, u.age, u.latitude, u.longitude, r.attractiveness_score
+FROM Users u
+LEFT JOIN Rankings r ON u.user_id = r.user_id
+WHERE u.user_id NOT IN (
     SELECT swipee_id
     FROM Swipes
     WHERE swiper_id = ?
 ) 
-AND age >= COALESCE(?, age)
-AND age <= COALESCE(?, age)
-AND gender = COALESCE(?, gender)
+AND u.age >= COALESCE(?, u.age)
+AND u.age <= COALESCE(?, u.age)
+AND u.gender = COALESCE(?, u.gender)
+ORDER BY r.attractiveness_score DESC
 `
 
 type DiscoverUsersV2Params struct {
@@ -105,12 +107,13 @@ type DiscoverUsersV2Params struct {
 }
 
 type DiscoverUsersV2Row struct {
-	UserID    string  `json:"user_id"`
-	Name      string  `json:"name"`
-	Gender    string  `json:"gender"`
-	Age       int32   `json:"age"`
-	Latitude  float64 `json:"latitude"`
-	Longitude float64 `json:"longitude"`
+	UserID              string         `json:"user_id"`
+	Name                string         `json:"name"`
+	Gender              string         `json:"gender"`
+	Age                 int32          `json:"age"`
+	Latitude            float64        `json:"latitude"`
+	Longitude           float64        `json:"longitude"`
+	AttractivenessScore sql.NullString `json:"attractiveness_score"`
 }
 
 func (q *Queries) DiscoverUsersV2(ctx context.Context, arg DiscoverUsersV2Params) ([]DiscoverUsersV2Row, error) {
@@ -134,6 +137,7 @@ func (q *Queries) DiscoverUsersV2(ctx context.Context, arg DiscoverUsersV2Params
 			&i.Age,
 			&i.Latitude,
 			&i.Longitude,
+			&i.AttractivenessScore,
 		); err != nil {
 			return nil, err
 		}

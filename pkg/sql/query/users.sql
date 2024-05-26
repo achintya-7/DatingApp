@@ -17,13 +17,15 @@ WHERE user_id NOT IN (
 );
 
 -- name: DiscoverUsersV2 :many
-SELECT user_id, name, gender, age, latitude, longitude
-FROM Users
-WHERE user_id NOT IN (
+SELECT u.user_id, u.name, u.gender, u.age, u.latitude, u.longitude, r.attractiveness_score
+FROM Users u
+LEFT JOIN Rankings r ON u.user_id = r.user_id
+WHERE u.user_id NOT IN (
     SELECT swipee_id
     FROM Swipes
     WHERE swiper_id = ?
 ) 
-AND age >= COALESCE(sqlc.narg(greater_than_age), age)
-AND age <= COALESCE(sqlc.narg(lower_than_age), age)
-AND gender = COALESCE(sqlc.narg(gender), gender);
+AND u.age >= COALESCE(sqlc.narg(greater_than_age), u.age)
+AND u.age <= COALESCE(sqlc.narg(lower_than_age), u.age)
+AND u.gender = COALESCE(sqlc.narg(gender), u.gender)
+ORDER BY r.attractiveness_score DESC;

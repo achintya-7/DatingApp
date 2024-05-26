@@ -22,7 +22,7 @@ func (rh *RouteHandler) SwipeUser(ctx *gin.Context) (*gin.H, *dto.ErrorResponse)
 
 	authPayload := ctx.MustGet(middleware.AUTHORIZATION_PAYLOAD).(*token.Payload)
 
-	if req.Preference == db.SwipesSwipeTypeNO {
+	if req.Preference == "NO" {
 		resp = gin.H{
 			"matched": false,
 		}

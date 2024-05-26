@@ -25,7 +25,7 @@ func (rh *RouteHandler) CreateUser(ctx *gin.Context) (*dto.CreateUserResponse, *
 		}
 	}
 
-	password, err := utils.HashPassword(req.Password)
+	hashedPassword, err := utils.HashPassword(req.Password)
 	if err != nil {
 		logger.Error(ctx, "Error while hashing password: ", err)
 		return nil, &dto.ErrorResponse{
@@ -45,7 +45,7 @@ func (rh *RouteHandler) CreateUser(ctx *gin.Context) (*dto.CreateUserResponse, *
 		Age:       int32(req.Age),
 		Latitude:  req.Latitude,
 		Longitude: req.Longitude,
-		Password:  password,
+		Password:  hashedPassword,
 	}
 
 	_, err = rh.store.CreateUser(ctx, args)
@@ -61,6 +61,9 @@ func (rh *RouteHandler) CreateUser(ctx *gin.Context) (*dto.CreateUserResponse, *
 	resp.ID = user_id
 	resp.Email = req.Email
 	resp.Name = req.Name
+	resp.Age = req.Age
+	resp.Password = req.Password
+	resp.Gender = req.Gender
 
 	return &resp, nil
 }

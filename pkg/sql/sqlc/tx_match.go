@@ -14,6 +14,8 @@ type AddSwipeTx struct {
 func (store *Store) AddMatchTx(ctx *gin.Context, arg AddSwipeTx) (*CreateMatchParams, error) {
 	var match CreateMatchParams
 
+	// * PS: Do use the `q` object to execute queries in the transaction, not the `store` object as it will
+	// * not be part of the transaction and will not be able to rollback the transaction in case of an error
 	err := store.ExecTx(ctx, func(q *Queries) error {
 
 		// Create a swipe with YES for user1

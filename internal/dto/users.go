@@ -5,15 +5,18 @@ type CreateUserRequest struct {
 	Name      string  `json:"name" binding:"required"`
 	Password  string  `json:"password" binding:"required"`
 	Gender    string  `json:"gender" binding:"required"`
-	Age       int8    `json:"age" binding:"required"`
+	Age       int8    `json:"age" binding:"required, gte=18, lte=100"`
 	Latitude  float64 `json:"latitude" binding:"required"`
 	Longitude float64 `json:"longitude" binding:"required"`
 }
 
 type CreateUserResponse struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
-	Name  string `json:"name"`
+	ID       string `json:"id"`
+	Email    string `json:"email"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
+	Gender   string `json:"gender"`
+	Age      int8   `json:"age"`
 }
 
 type DiscoverV2Request struct {
