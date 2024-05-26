@@ -5,5 +5,6 @@ CREATE TABLE Swipes (
     swipe_type ENUM('YES', 'NO'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (swiper_id) REFERENCES Users(user_id),
-    FOREIGN KEY (swipee_id) REFERENCES Users(user_id)
+    FOREIGN KEY (swipee_id) REFERENCES Users(user_id),
+    UNIQUE (swiper_id, swipee_id)
 );

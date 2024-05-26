@@ -6,14 +6,14 @@ import (
 	"github.com/google/uuid"
 )
 
-type AddMatchTx struct {
+type AddSwipeTx struct {
 	User1Id string
 	User2Id string
 }
 
-func (store *Store) AddMatchTx(ctx *gin.Context, arg AddMatchTx) (*CreateMatchParams, error) {
+func (store *Store) AddMatchTx(ctx *gin.Context, arg AddSwipeTx) (*CreateMatchParams, error) {
 	var match CreateMatchParams
-	
+
 	err := store.ExecTx(ctx, func(q *Queries) error {
 
 		// Create a swipe with YES for user1
@@ -31,8 +31,8 @@ func (store *Store) AddMatchTx(ctx *gin.Context, arg AddMatchTx) (*CreateMatchPa
 
 		// Check if user2 has swiped YES for user1
 		CheckMatchArgs := CheckMatchParams{
-			SwiperID:   arg.User2Id,
-			SwipeeID:   arg.User1Id,
+			SwiperID: arg.User2Id,
+			SwipeeID: arg.User1Id,
 		}
 
 		check, err := q.CheckMatch(ctx, CheckMatchArgs)

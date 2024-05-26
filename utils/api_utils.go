@@ -45,7 +45,7 @@ func handlePanic(context *gin.Context) {
 func sendErrorResponse(context *gin.Context, err *dto.ErrorResponse) {
 	context.AbortWithStatusJSON(err.HttpStatusCode, dto.ApiResponse[any]{
 		Status: false,
-		Data:   nil,
+		Result: nil,
 		Error: &dto.ApiError{
 			Code:           err.Code,
 			Message:        err.Message,
@@ -61,7 +61,7 @@ func sendSuccessResponse[T any](context *gin.Context, result *T) {
 	}
 	context.JSON(http.StatusOK, dto.ApiResponse[T]{
 		Status: true,
-		Data:   result,
+		Result: result,
 		Error:  nil,
 	})
 }
@@ -69,7 +69,7 @@ func sendSuccessResponse[T any](context *gin.Context, result *T) {
 func sendNotFoundResponse(context *gin.Context) {
 	context.AbortWithStatusJSON(http.StatusNotFound, dto.ApiResponse[any]{
 		Status: false,
-		Data:   nil,
+		Result: nil,
 		Error: &dto.ApiError{
 			Code:           http.StatusNotFound,
 			Message:        "Oops! No data found",

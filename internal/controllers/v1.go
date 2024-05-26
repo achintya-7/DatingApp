@@ -2,6 +2,7 @@ package controllers
 
 import (
 	v1 "github.com/achintya-7/dating-app/internal/handlers/v1"
+	"github.com/achintya-7/dating-app/internal/middleware"
 	db "github.com/achintya-7/dating-app/pkg/sql/sqlc"
 	"github.com/achintya-7/dating-app/pkg/token"
 	"github.com/achintya-7/dating-app/utils"
@@ -25,14 +26,14 @@ func (r *Router) SetupRoutes(router *gin.RouterGroup) {
 
 	v1Route.POST("/login", utils.HandlerWrapper(r.handlers.Login))
 
-	// Apply auth middleware
-	// v1Route.Use(middleware.AuthMiddleware(*r.tokenMaker))
-
 	// Setup user routes
 	usersRoute := v1Route.Group("/users")
 	usersRoute.POST("/create", utils.HandlerWrapper(r.handlers.CreateUser))
 
+	// Apply auth middleware
+	v1Route.Use(middleware.AuthMiddleware(*r.tokenMaker))
+
 	// Setup match routes
-	matchRoute := v1Route.Group("/match")
-	matchRoute.POST("/match", utils.HandlerWrapper[gin.H](r.handlers.Match))
+	matchRoute := v1Route.Group("/swipe")
+	matchRoute.POST("/", utils.HandlerWrapper[gin.H](r.handlers.SwipeUser))
 }

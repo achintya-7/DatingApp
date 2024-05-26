@@ -33,7 +33,7 @@ func Info(ctx LoggerContext, msg ...any) {
 
 	correlationID, ok := ctx.Value("correlation_id").(string)
 	if !ok {
-		zap.L().Info(fmt.Sprintf("%v %s", msg...))
+		zap.L().Info(fmt.Sprintf("%v", msg...))
 		return
 	}
 

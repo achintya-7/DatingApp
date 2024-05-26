@@ -4,7 +4,9 @@ import (
 	"log"
 
 	"github.com/achintya-7/dating-app/internal/dto"
+	"github.com/achintya-7/dating-app/logger"
 	db "github.com/achintya-7/dating-app/pkg/sql/sqlc"
+	"github.com/achintya-7/dating-app/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -14,10 +16,21 @@ func (rh *RouteHandler) CreateUser(ctx *gin.Context) (*dto.CreateUserResponse, *
 	var resp dto.CreateUserResponse
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
+		logger.Error(ctx, "Error while binding request: ", err)
 		return nil, &dto.ErrorResponse{
 			Code:           400,
 			Message:        "Invalid request",
 			HttpStatusCode: 400,
+		}
+	}
+
+	password, err := utils.HashPassword(req.Password)
+	if err != nil {
+		logger.Error(ctx, "Error while hashing password: ", err)
+		return nil, &dto.ErrorResponse{
+			Code:           500,
+			Message:        "Internal server error",
+			HttpStatusCode: 500,
 		}
 	}
 
@@ -31,9 +44,10 @@ func (rh *RouteHandler) CreateUser(ctx *gin.Context) (*dto.CreateUserResponse, *
 		Age:       int32(req.Age),
 		Latitude:  req.Latitude,
 		Longitude: req.Longitude,
+		Password:  password,
 	}
 
-	_, err := rh.store.CreateUser(ctx, args)
+	_, err = rh.store.CreateUser(ctx, args)
 	if err != nil {
 		log.Println("Error while creating user: ", err)
 		return nil, &dto.ErrorResponse{

@@ -3,7 +3,7 @@ package dto
 // ApiResponse is a standard response from the service.
 type ApiResponse[T any] struct {
 	Status bool      `json:"status"`
-	Data   *T        `json:"data"`
+	Result *T        `json:"result"`
 	Error  *ApiError `json:"error"`
 }
 
