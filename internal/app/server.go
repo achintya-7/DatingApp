@@ -13,6 +13,8 @@ import (
 	"github.com/achintya-7/dating-app/pkg/token"
 	distributor "github.com/achintya-7/dating-app/pkg/worker/distributor"
 	processor "github.com/achintya-7/dating-app/pkg/worker/processor"
+	"github.com/didip/tollbooth"
+	"github.com/didip/tollbooth_gin"
 	"github.com/gin-gonic/gin"
 	"github.com/hibiken/asynq"
 )
@@ -86,6 +88,11 @@ func (s *Server) setupRouter() {
 
 	// Register health route
 	s.registerHealthRoute(baseRouter)
+
+	// Add a rate limiter middleware
+	limiter := tollbooth.NewLimiter(float64(3), nil) // 3 requests per second
+	limiter.SetIPLookups([]string{"X-Forwarded-For", "X-Real-IP", "RemoteAddr"})
+	baseRouter.Use(tollbooth_gin.LimitHandler(limiter))
 
 	// Setup middleware
 	baseRouter.Use(middleware.SetCorrelationIdMiddleware())
