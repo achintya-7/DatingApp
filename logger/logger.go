@@ -88,7 +88,7 @@ func Warn(ctx LoggerContext, msg ...any) {
 
 func Fatal(ctx LoggerContext, msg ...any) {
 	if ctx == nil {
-		zap.L().Fatal(fmt.Sprintf("%v", msg...))
+		zap.L().Fatal(fmt.Sprintf("%s", msg...))
 		return
 	}
 

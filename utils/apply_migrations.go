@@ -2,6 +2,7 @@ package utils
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/achintya-7/dating-app/config"
 	"github.com/achintya-7/dating-app/logger"
@@ -15,6 +16,19 @@ func ApplyMigrations() {
 	if err != nil {
 		logger.Fatal(nil, "Error opening database: ", err.Error())
 	}
+
+	for {
+		err := db.Ping()
+		if err != nil {
+			logger.Info(nil, "Waiting for database to start...")
+			logger.Error(nil, "Database connection error: ", err.Error())
+			time.Sleep(5 * time.Second)
+		} else {
+			break
+		}
+	}
+
+	logger.Info(nil, "Database started successfully")
 
 	driver, err := mysql.WithInstance(db, &mysql.Config{})
 	if err != nil {

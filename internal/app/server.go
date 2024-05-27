@@ -50,7 +50,7 @@ func (s *Server) setupDatbases() {
 func (s *Server) setupClient() {
 	tokenMaker, err := token.NewPasetoMaker(config.Values.TokenSymmetricKey)
 	if err != nil {
-		logger.Fatal(nil, "cannot create token maker")
+		logger.Fatal(nil, "cannot create token maker", err)
 	}
 
 	s.tokenMaker = tokenMaker
