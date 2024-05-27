@@ -1,13 +1,13 @@
 package dto
 
 type CreateUserRequest struct {
-	Email     string  `json:"email" binding:"required,email"`
-	Name      string  `json:"name" binding:"required"`
-	Password  string  `json:"password" binding:"required"`
-	Gender    string  `json:"gender" binding:"required"`
-	Age       int8    `json:"age" binding:"required,gte=18,lte=100"`
-	Latitude  float64 `json:"latitude" binding:"required"`
-	Longitude float64 `json:"longitude" binding:"required"`
+	Email     string  `json:"email" binding:"required,email" faker:"email"`
+	Name      string  `json:"name" binding:"required" faker:"name"`
+	Password  string  `json:"password" binding:"required" faker:"word"`
+	Gender    string  `json:"gender" binding:"required" faker:"oneof: male, female, binary"`
+	Age       int8    `json:"age" binding:"required,gte=18,lte=100" faker:"oneof: 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30"`
+	Latitude  float64 `json:"latitude" binding:"required" faker:"lat"`
+	Longitude float64 `json:"longitude" binding:"required" faker:"long"`
 }
 
 type CreateUserResponse struct {

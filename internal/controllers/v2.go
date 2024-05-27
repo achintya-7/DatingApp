@@ -28,6 +28,7 @@ func (r *V2Router) SetupRoutes(router *gin.RouterGroup) {
 	// Setup user routes
 	usersRoute := v2Route.Group("/users")
 	usersRoute.POST("/create", utils.HandlerWrapper(r.handlers.CreateUserV2))
+	usersRoute.GET("/create/random", utils.HandlerWrapper(r.handlers.CreateRandomUserV2))
 
 	// Apply auth middleware
 	authRoute := v2Route.Group("/")
