@@ -129,7 +129,7 @@ It is a simple approach but can be improved by adding more factors like the numb
 When two users swipe `YES` on each other, a background job is started to send an email to both users informing them of the match. The email contains the user's name and email address. The email is sent using the `mail` package and the `CRITICAL` queue is used for this with high priority.
 
 ### Correlation ID
-A correlation ID is generated for each request and added to the request context. This correlation ID is used to track the request throughout the application and is added to the logs for each request. This helps in debugging and tracing requests through the application and also in microservices and distributed systems.
+A correlation ID is generated for each request and added to the request context. This correlation ID is used to track the request throughout the application and is added to the logs for each request. This helps in debugging and tracing requests through the application and also in microservices and distributed systems. The correlation ID is generated using the `uuid` package and is added to the request context using a middleware. The correlation ID is then added to context which is then passed through the request and response cycle. The logger is able to pick up the correlation ID from the context and add it to the logs.
 
 ## Further Improvements
 - Add more fields to the user profile
