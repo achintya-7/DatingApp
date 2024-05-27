@@ -27,18 +27,16 @@ type CalculateUserAttractivenessTaskPayload struct {
 const EmailBody = `
 Dear %s,
 
-Congratulations! ❤️ You have a new match on our platform. ❤️
+<p>Congratulations! ❤️ You have a new match on our platform. ❤️</p>
 
-Here are the details of your match:
-Name: %s
+<p>Here are the details of your match:</p>
+<p>Name: %s</p>
 
-We encourage you to reach out to your match and start a conversation. Who knows where it might lead? ❤️
+<p>We encourage you to reach out to your match and start a conversation. Who knows where it might lead? ❤️</p>
 
-Thank you for using our platform. We wish you all the best in your journey to find a match.
+<p>Thank you for using our platform. We wish you all the best in your journey to find a match.</p>
 
-Best regards,
-[Your Name]
-[Your Position]
+<p>Best regards,</p>
 `
 
 func EmailBodyBuilder(userName, matchedUserName string) string {

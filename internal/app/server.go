@@ -25,6 +25,7 @@ type Server struct {
 	processor   *processor.RedisTaskProcessor
 }
 
+// NewServer creates a new server instance
 func NewServer() *Server {
 	server := &Server{}
 
@@ -36,6 +37,7 @@ func NewServer() *Server {
 	return server
 }
 
+// setupDatabases sets up the database connection and store
 func (s *Server) setupDatbases() {
 	conn, err := sql.Open("mysql", config.Values.MySqlUrl)
 	if err != nil {
@@ -47,6 +49,7 @@ func (s *Server) setupDatbases() {
 	s.store = store
 }
 
+// setupClient sets up the token maker
 func (s *Server) setupClient() {
 	tokenMaker, err := token.NewPasetoMaker(config.Values.TokenSymmetricKey)
 	if err != nil {
@@ -56,6 +59,7 @@ func (s *Server) setupClient() {
 	s.tokenMaker = tokenMaker
 }
 
+// setupWorker sets up the task distributor and processor
 func (s *Server) setupWorker() {
 	redisOpt := asynq.RedisClientOpt{
 		Addr: config.Values.RedisUrl,
@@ -73,6 +77,7 @@ func (s *Server) setupWorker() {
 	s.processor = redisTaskProcessor
 }
 
+// setupRouter sets up the gin router
 func (s *Server) setupRouter() {
 	router := gin.Default()
 
@@ -99,6 +104,7 @@ func (s *Server) setupRouter() {
 	s.router = router
 }
 
+// Start starts the server
 func (s *Server) Start() error {
 	go func() {
 		logger.Info(nil, "starting task processor")
@@ -115,6 +121,7 @@ func (s *Server) Start() error {
 	return s.router.Run(port)
 }
 
+// registerHealthRoute registers the health route
 func (s *Server) registerHealthRoute(router *gin.RouterGroup) {
 	router.GET("/health", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{

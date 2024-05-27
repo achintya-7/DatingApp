@@ -29,6 +29,7 @@ type GmailSender struct {
 	fromEmailPassword string
 }
 
+// NewGmailSender creates a new GmailSender
 func NewGmailSender(name string, fromEmailAddress string, fromEmailPassword string) EmailSender {
 	return &GmailSender{
 		name:              name,
@@ -37,6 +38,7 @@ func NewGmailSender(name string, fromEmailAddress string, fromEmailPassword stri
 	}
 }
 
+// SendEmail sends an email
 func (sender *GmailSender) SendEmail(
 	subject string,
 	content string,

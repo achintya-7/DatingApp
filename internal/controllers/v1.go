@@ -14,6 +14,7 @@ type Router struct {
 	tokenMaker *token.PasetoMaker
 }
 
+// NewV1Router creates a new router instance
 func NewV1Router(store *db.Store, tokenMaker *token.PasetoMaker) *Router {
 	return &Router{
 		handlers:   v1.NewRouteHandler(store, tokenMaker),
@@ -21,6 +22,7 @@ func NewV1Router(store *db.Store, tokenMaker *token.PasetoMaker) *Router {
 	}
 }
 
+// SetupRoutes sets up the routes for the V1 router
 func (r *Router) SetupRoutes(router *gin.RouterGroup) {
 	v1Route := router.Group("/v1")
 

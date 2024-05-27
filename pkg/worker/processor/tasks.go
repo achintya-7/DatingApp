@@ -11,6 +11,7 @@ import (
 	"github.com/hibiken/asynq"
 )
 
+// RedisTaskProcessor is a struct that processes tasks
 func (processor *RedisTaskProcessor) SendMatchedEmailProcessor(ctx context.Context, task *asynq.Task) error {
 	var payload worker.SendMatchEmailTaskPayload
 	if err := json.Unmarshal(task.Payload(), &payload); err != nil {
@@ -62,6 +63,7 @@ func (processor *RedisTaskProcessor) SendMatchedEmailProcessor(ctx context.Conte
 	return nil
 }
 
+// CalculateUserAttractivenessProcessor is a function that calculates the user's attractiveness
 func (processor *RedisTaskProcessor) CalculateUserAttractivenessProcessor(ctx context.Context, task *asynq.Task) error {
 	var payload worker.CalculateUserAttractivenessTaskPayload
 	if err := json.Unmarshal(task.Payload(), &payload); err != nil {

@@ -11,6 +11,7 @@ type AddSwipeTx struct {
 	User2Id string
 }
 
+// AddMatchTx creates a match if both users have swiped YES for each other
 func (store *Store) AddMatchTx(ctx *gin.Context, arg AddSwipeTx) (CreateMatchParams, error) {
 	match := CreateMatchParams{}
 

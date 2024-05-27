@@ -1,6 +1,9 @@
 # Dating App Service
 This is a dating app service that allows users to create an account, login, and find other users to match with. Users can respond to other users' profiles with `YES` and `NO`.
 
+## Architecture
+
+
 ## Code Structure
 ```
 ├───cmd
@@ -56,6 +59,14 @@ make redis
 go run cmd/dating_app/main.go
 ```
 ## API Endpoints
-- `GET /dating-app/health`: Health check endpoint
-- `POST /api/v1/login`: Login with an existing user
-- `POST /api/v1/users/create`: Create a new user
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://app.getpostman.com/run-collection/34165931-0c4a5274-c7dd-48d9-b4e6-1658bfc83f0d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D34165931-0c4a5274-c7dd-48d9-b4e6-1658bfc83f0d%26entityType%3Dcollection%26workspaceId%3D1762aed9-119b-4342-b3ac-a088af0f82a9)
+- `GET  /dating-app/health`: Health check endpoint
+- `POST /dating-app/v1/users/create`: Create a new user [Deprecated]
+- `POST /dating-app/v2/users/create`: Create a new user and also setup a row in the `rankings` table for attractiveness ranking
+- `GET  /dating-app/v2/users/create/random`: Create a random new user and also setup a row in the `rankings` table for attractiveness ranking
+- `POST /dating-app/v1/login`: Login a user using email and password
+- `POST /dating-app/v1/swipe`: Api route to swipe on a user, either `YES` or `NO` along with the user's id is required [Deprecated]
+- `POST /dating-app/v2/swipe`: Similar to v1 but also starts a background job to calculate the attractiveness score and a job to send mails on a match
+- `GET  /dating-app/v1/users/discover`: Get all users that the current user has not swiped on [Deprecated]
+- `POST /dating-app/v2/users/discover`: Similar to v1 but also support filtering and sort the users based on attractiveness score
+

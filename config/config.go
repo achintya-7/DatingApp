@@ -19,6 +19,7 @@ type Config struct {
 	EmailPassowrd     string `mapstructure:"EMAIL_PASSWORD"`
 }
 
+// LoadConfig loads the configuration from the config file or environment variables
 func LoadConfig() (*Config) {
 	viper.AddConfigPath(".")
 	viper.SetConfigName("app")

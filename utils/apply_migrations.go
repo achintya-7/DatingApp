@@ -11,6 +11,7 @@ import (
 	_ "github.com/golang-migrate/migrate/source/file"
 )
 
+// ApplyMigrations applies the migrations to the database
 func ApplyMigrations() {
 	db, err := sql.Open("mysql", config.Values.MySqlUrl)
 	if err != nil {

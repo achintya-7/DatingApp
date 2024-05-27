@@ -11,6 +11,7 @@ type Store struct {
 	db *sql.DB
 }
 
+// NewStore creates a new store for the given database
 func NewStore(db *sql.DB) *Store {
 	return &Store{
 		Querier: New(db),
@@ -18,6 +19,7 @@ func NewStore(db *sql.DB) *Store {
 	}
 }
 
+// ExecTx executes a function within a database transaction
 func (store *Store) ExecTx(ctx context.Context, fn func(*Queries) error) error {
 	tx, err := store.db.BeginTx(ctx, nil)
 	if err != nil {

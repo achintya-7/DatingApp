@@ -9,6 +9,7 @@ type CreateUserTx struct {
 	UserReq CreateUserParams
 }
 
+// CreateUserTx creates a new user and an entry in the ranking table
 func (store *Store) CreateUserTx(ctx *gin.Context, arg CreateUserTx) (*dto.CreateUserResponse, error) {
 	var user dto.CreateUserResponse
 

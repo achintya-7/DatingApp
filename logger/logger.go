@@ -11,6 +11,7 @@ type LoggerContext interface {
 	Value(key any) any
 }
 
+// LoadLogger initializes the logger
 func LoadLogger() {
 	logger, err := zap.NewDevelopment(
 		zap.AddStacktrace(zap.ErrorLevel),

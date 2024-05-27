@@ -10,6 +10,7 @@ import (
 	"github.com/hibiken/asynq"
 )
 
+// Sends a task to the worker to send an email to the user
 func (distributor *RedisTaskDistributor) SendMatchedEmailTask(
 	ctx context.Context,
 	payload *worker.SendMatchEmailTaskPayload,
@@ -36,6 +37,7 @@ func (distributor *RedisTaskDistributor) SendMatchedEmailTask(
 	return nil
 }
 
+// Sends a task to the worker to calculate the user's attractiveness
 func (rtd *RedisTaskDistributor) CalculateUserAttractivenessTask(
 	ctx context.Context,
 	payload *worker.CalculateUserAttractivenessTaskPayload,
