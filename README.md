@@ -128,6 +128,9 @@ It is a simple approach but can be improved by adding more factors like the numb
 ### Email Sender on Match
 When two users swipe `YES` on each other, a background job is started to send an email to both users informing them of the match. The email contains the user's name and email address. The email is sent using the `mail` package and the `CRITICAL` queue is used for this with high priority.
 
+### Correlation ID
+A correlation ID is generated for each request and added to the request context. This correlation ID is used to track the request throughout the application and is added to the logs for each request. This helps in debugging and tracing requests through the application and also in microservices and distributed systems.
+
 ## Further Improvements
 - Add more fields to the user profile
 - Add more complex logic to calculate the attractiveness score
