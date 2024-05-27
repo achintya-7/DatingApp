@@ -34,12 +34,12 @@ def db_insert_users():
         if response.status_code == 200:
             print(f"User {user['name']} created successfully")
         else:
-            print(f"Failed to create user {user['name']}")
-
+            print(f"Failed to create user {user['name']} with error :- {response.text}")
+            
         return response
-
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        executor.map(send_post_request, USERS_DICT)
+    
+    for user in USERS_DICT:
+        send_post_request(user)
    
 if __name__ == '__main__':
     db_insert_users()

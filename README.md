@@ -2,7 +2,7 @@
 This is a dating app service that allows users to create an account, login, and find other users to match with. Users can respond to other users' profiles with `YES` and `NO`.
 
 ## Architecture
-
+![Diagraam](static/diagram.png)
 
 ## Code Structure
 ```
@@ -58,6 +58,11 @@ make redis
 
 go run cmd/dating_app/main.go
 ```
+If you dont want to make random users, you can also run the python script in `scripts` folder to create a users after starting the application.
+```bash
+python scripts/feeder.py
+```
+
 ## API Endpoints
 [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://app.getpostman.com/run-collection/34165931-0c4a5274-c7dd-48d9-b4e6-1658bfc83f0d?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D34165931-0c4a5274-c7dd-48d9-b4e6-1658bfc83f0d%26entityType%3Dcollection%26workspaceId%3D1762aed9-119b-4342-b3ac-a088af0f82a9)
 - `GET  /dating-app/health`: Health check endpoint
