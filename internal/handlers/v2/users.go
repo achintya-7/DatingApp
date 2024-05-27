@@ -87,6 +87,22 @@ func (rh *RouteHandler) DiscoverV2(ctx *gin.Context) (*[]dto.DiscoverV2Response,
 		}
 	}
 
+	if req.Age.GreaterThan != nil && *req.Age.GreaterThan <= 18 {
+		return nil, &dto.ErrorResponse{
+			Code:           400,
+			Message:        "Age should be greater than 18",
+			HttpStatusCode: 400,
+		}
+	}
+
+	if req.Age.LessThan != nil && req.Age.GreaterThan != nil && *req.Age.LessThan <= *req.Age.GreaterThan {
+		return nil, &dto.ErrorResponse{
+			Code:           400,
+			Message:        "Less than age should be greater than greater than age",
+			HttpStatusCode: 400,
+		}
+	}
+
 	authPayload := ctx.MustGet(middleware.AUTHORIZATION_PAYLOAD).(*token.Payload)
 
 	discoverV2Args := db.DiscoverUsersV2Params{
