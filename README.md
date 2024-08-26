@@ -1,5 +1,5 @@
 # Dating App Service
-This is a dating app service that allows users to create an account, login, and find other users to match with. Users can respond to other users' profiles with `YES` and `NO`.
+This is a dating app service that allows users to create an account, login, and find other users to match with. Users can respond to other users' profiles with `YES` and `NO`. On the basis of this, an attractivness score is generated for the user which is swiped in background. This is then further used as ranking and sorting of users with higher attractivness score. On match, a new background process is triggered to send mail to both the mathced users.
 
 ## Architecture
 ![Diagraam](static/diagram.png)
@@ -58,7 +58,7 @@ make redis
 
 go run cmd/dating_app/main.go
 ```
-If you dont want to make random users, you can also run the python script in `scripts` folder to create a users after starting the application.
+If you dont want to make random users, you can simply run the python script in `scripts` folder to create a bunch of users.
 ```bash
 python scripts/feeder.py
 ```
